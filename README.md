@@ -8,6 +8,6 @@ FAONet is a project that leverages data from FAOSTAT to build and analyze bipart
 - Interactive visualization and summary statistics
 
 **Applications:**
-	•	Agricultural economics
-	•	Resilience analysis of food supply networks
-	•	International trade structure exploration
+- Agricultural economics
+- Resilience analysis of food supply networks
+- International trade structure exploration
