@@ -4,3 +4,4 @@
 - [ ] Para que funcione bien el test tengo que subir los datos del café.
 - [ ] Revisar que lo que está ahora funciona.
 - [ ] Tengo un pyproject.toml, ver si funciona bien.
+- [ ] 
