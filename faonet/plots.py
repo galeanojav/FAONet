@@ -36,7 +36,10 @@ def plot_trade_scatter(df, x_col='Reporter Country Code (M49)', y_col='Partner C
     return ax
 
 
-def plot_bipartite_network(B, group0_nodes, title=None, figsize=(12, 8), node_size=700, font_size=10):
+import matplotlib.pyplot as plt
+import networkx as nx
+
+def plot_bipartite_network2(B, group0_nodes, title=None, figsize=(12, 8), node_size=700, font_size=10):
     """
     Plot a bipartite network using NetworkX with edge weights as colors.
 
@@ -51,6 +54,8 @@ def plot_bipartite_network(B, group0_nodes, title=None, figsize=(12, 8), node_si
     Returns:
         matplotlib.axes.Axes: The plot axes object.
     """
+    fig, ax = plt.subplots(figsize=figsize)
+
     # Layout
     pos = nx.bipartite_layout(B, group0_nodes)
 
@@ -59,19 +64,16 @@ def plot_bipartite_network(B, group0_nodes, title=None, figsize=(12, 8), node_si
     weights = [d['weight'] for (_, _, d) in edges]
     max_weight = max(weights) if weights else 1  # avoid division by zero
 
-    # Create figure
-    plt.figure(figsize=figsize)
+    # Draw network
     nx.draw(
-        B, pos, with_labels=True, node_size=node_size, font_size=font_size,
+        B, pos, ax=ax, with_labels=True, node_size=node_size, font_size=font_size,
         edge_color=weights,
         width=[w / max_weight * 5 for w in weights],
         edge_cmap=plt.cm.Blues
     )
 
     if title:
-        plt.title(title)
+        ax.set_title(title)
 
     plt.tight_layout()
-    plt.show()
-
-    return plt.gca()
+    return ax

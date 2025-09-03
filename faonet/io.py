@@ -12,18 +12,18 @@ def load_and_merge_csv(filepaths):
     dataframes = [pd.read_csv(path) for path in filepaths]
     return pd.concat(dataframes, ignore_index=True)
 
-def load_file(filepath, year=2023):
-    """Load FAOSTAT CSV files.
+def load_file(file, year=2023):
+    """Load FAOSTAT CSV file.
     
     Args:
-        filepaths (str): Paths to the CSV files.
+        file: CSV file.
 
     Returns:
-        pd.DataFrame: DataFrame filtered by year.
+        pd.DataFrame:  DataFrame filtered by year.
     """
 
-    dataframe = pd.read_csv(filepath)
-    return dataframe[dataframe['Year'] == year]
+    dataframes = pd.read_csv(file)
+    return dataframes[dataframes['Year'] == year]
 
 
 def save_dataframe(df, filepath):
