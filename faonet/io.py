@@ -12,7 +12,7 @@ def load_and_merge_csv(filepaths):
     dataframes = [pd.read_csv(path) for path in filepaths]
     return pd.concat(dataframes, ignore_index=True)
 
-def load(filepaths, year=2023):
+def load_file(filepaths, year=2023):
     """Load FAOSTAT CSV files.
     
     Args:
