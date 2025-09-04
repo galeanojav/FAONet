@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 import pandas as pd
+import seaborn as sns
 
 
 def plot_trade_scatter(df, x_col='Reporter Country Code (M49)', y_col='Partner Country Code (M49)', 
@@ -236,6 +237,44 @@ def plot_degree_by_rank(df_reporters, df_partners,
     ax.set_title(title)
     ax.legend()
     ax.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    return ax
+
+
+def plot_weight_matrix(df, row="Partner Countries", col="Reporter Countries", 
+                       value="Value", cmap="coolwarm", figsize=(20, 15), 
+                       title="Weighted Adjacency Matrix (Trade Volume)"):
+    """
+    Plot a heatmap of the weighted bipartite adjacency matrix.
+
+    Args:
+        df (pd.DataFrame): Filtered trade DataFrame.
+        row (str): Column name for matrix rows (e.g., importers).
+        col (str): Column name for matrix columns (e.g., exporters).
+        value (str): Column with weights (e.g., trade volume).
+        cmap (str): Seaborn colormap.
+        figsize (tuple): Size of the figure.
+        title (str): Plot title.
+
+    Returns:
+        matplotlib.axes.Axes: The heatmap Axes object.
+    """
+    # Build matrix
+    matrix = df.pivot(index=row, columns=col, values=value)
+
+    # Sort rows/cols by total weights
+    matrix = matrix.loc[matrix.sum(axis=1).sort_values(ascending=False).index,
+                        matrix.sum(axis=0).sort_values(ascending=False).index]
+
+    # Plot
+    plt.figure(figsize=figsize)
+    ax = sns.heatmap(matrix, cmap=cmap, annot=False, linewidths=0.5)
+
+    plt.xlabel(col)
+    plt.ylabel(row)
+    plt.title(title)
     plt.tight_layout()
     plt.show()
 
