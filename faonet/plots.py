@@ -8,18 +8,29 @@ def plot_trade_scatter(df, x_col='Reporter Country Code (M49)', y_col='Partner C
     """
     Plot a scatter plot of trade interactions between reporter and partner countries.
 
-    Args:
-        df (pd.DataFrame): DataFrame containing trade data.
-        x_col (str): Column name for x-axis (reporter country codes).
-        y_col (str): Column name for y-axis (partner country codes).
-        value_col (str): Column name used for coloring the points.
-        step (int): Step for showing ticks (default is every 10th).
-        cmap (str): Matplotlib colormap.
-        alpha (float): Transparency level for points.
-        figsize (tuple): Size of the plot.
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame containing trade data.
+    x_col : str
+        Column name for x-axis (e.g. reporter country codes).
+    y_col : str
+        Column name for y-axis (e.g. partner country codes).
+    value_col : str
+        Column name used for point color intensity (e.g. trade value).
+    step : int
+        Interval of tick marks on the axes (e.g. show every 10th value).
+    cmap : str
+        Colormap to use for the scatter points.
+    alpha : float
+        Transparency level for the points.
+    figsize : tuple
+        Figure size in inches.
 
-    Returns:
-        matplotlib.axes.Axes: The plot axes object.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The plot axes object.
     """
     ax = df.plot(kind='scatter', x=x_col, y=y_col, s=32, c=value_col, 
                  cmap=cmap, alpha=alpha, figsize=figsize)
@@ -41,18 +52,27 @@ def plot_trade_scatter(df, x_col='Reporter Country Code (M49)', y_col='Partner C
 
 def plot_bipartite_network2(B, group0_nodes, title=None, figsize=(12, 8), node_size=700, font_size=10):
     """
-    Plot a bipartite network using NetworkX with edge weights as colors.
+    Plot a bipartite network using NetworkX with edge weights shown as color intensity.
 
-    Args:
-        B (networkx.Graph): Bipartite graph with 'weight' attribute on edges.
-        group0_nodes (list or set): Nodes from group 0 (e.g., exporters) used to compute layout.
-        title (str): Optional title for the plot.
-        figsize (tuple): Figure size in inches.
-        node_size (int): Size of the nodes.
-        font_size (int): Font size for node labels.
+    Parameters
+    ----------
+    B : networkx.Graph
+        Bipartite graph with 'weight' attributes on edges.
+    group0_nodes : list or set
+        Nodes from one bipartite group (used for layout positioning).
+    title : str, optional
+        Title of the plot.
+    figsize : tuple
+        Figure size in inches.
+    node_size : int
+        Size of the nodes in the plot.
+    font_size : int
+        Font size for node labels.
 
-    Returns:
-        matplotlib.axes.Axes: The plot axes object.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The matplotlib Axes object of the plot.
     """
     fig, ax = plt.subplots(figsize=figsize)
 
@@ -84,22 +104,35 @@ def plot_degree_bar(df, country_col="Reporter Country", degree_col="Degree",
                     title="Node Degree", xlabel="Country", ylabel="Degree", 
                     color="blue", alpha=0.7, figsize=(12, 6), rotation=90):
     """
-    Plot a bar chart of node degrees (e.g., exporters or importers) in the bipartite network.
+    Plot a bar chart of node degrees (e.g., exporters or importers) in a bipartite network.
 
-    Args:
-        df (pd.DataFrame): DataFrame with at least two columns: one for countries, one for degree values.
-        country_col (str): Name of the column with country/node names.
-        degree_col (str): Name of the column with degree values.
-        title (str): Plot title.
-        xlabel (str): Label for x-axis.
-        ylabel (str): Label for y-axis.
-        color (str): Color of the bars.
-        alpha (float): Transparency of the bars.
-        figsize (tuple): Figure size.
-        rotation (int): Rotation angle for x-tick labels.
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing node information with degree values.
+    country_col : str
+        Name of the column with country or node names.
+    degree_col : str
+        Name of the column with degree values.
+    title : str
+        Title of the plot.
+    xlabel : str
+        Label for the x-axis.
+    ylabel : str
+        Label for the y-axis.
+    color : str
+        Color used for the bars.
+    alpha : float
+        Transparency level for the bars (0 to 1).
+    figsize : tuple
+        Size of the figure in inches (width, height).
+    rotation : int
+        Rotation angle of the x-axis tick labels.
 
-    Returns:
-        matplotlib.axes.Axes: The plot axes object.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object of the created plot.
     """
     df_sorted = df.sort_values(by=degree_col, ascending=False)
 
@@ -127,23 +160,37 @@ def plot_degree_comparison(df_reporters, df_partners,
                            rotation=90,
                            use_log_scale=False):
     """
-    Plot side-by-side scatter plots comparing degree of reporter and partner countries.
+    Plot side-by-side scatter plots comparing the degree of reporter and partner countries.
 
-    Args:
-        df_reporters (pd.DataFrame): DataFrame of reporter countries with degree values.
-        df_partners (pd.DataFrame): DataFrame of partner countries with degree values.
-        reporter_country_col (str): Column name for reporter country names.
-        partner_country_col (str): Column name for partner country names.
-        degree_col (str): Column name with degree values.
-        figsize (tuple): Size of the figure.
-        reporter_color (str): Color for reporter scatter plot.
-        partner_color (str): Color for partner scatter plot.
-        alpha (float): Transparency of scatter points.
-        rotation (int): Rotation angle for x-axis labels.
-        use_log_scale (bool): Whether to use log scale on the y-axis.
+    Parameters
+    ----------
+    df_reporters : pandas.DataFrame
+        DataFrame containing degree values for reporter (exporter) nodes.
+    df_partners : pandas.DataFrame
+        DataFrame containing degree values for partner (importer) nodes.
+    reporter_country_col : str
+        Column name for reporter (exporter) country names.
+    partner_country_col : str
+        Column name for partner (importer) country names.
+    degree_col : str
+        Column name containing the degree values.
+    figsize : tuple
+        Size of the entire figure in inches (width, height).
+    reporter_color : str
+        Color used for the reporter scatter plot.
+    partner_color : str
+        Color used for the partner scatter plot.
+    alpha : float
+        Transparency level for the scatter points.
+    rotation : int
+        Rotation angle for x-axis tick labels.
+    use_log_scale : bool
+        If True, apply logarithmic scale to the y-axis.
 
-    Returns:
-        matplotlib.figure.Figure: The figure object.
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The matplotlib Figure object containing the two subplots.
     """
     df_reporters_sorted = df_reporters.sort_values(by=degree_col, ascending=False)
     df_partners_sorted = df_partners.sort_values(by=degree_col, ascending=False)
@@ -188,26 +235,43 @@ def plot_degree_by_rank(df_reporters, df_partners,
                         xlabel="Rank",
                         ylabel="Degree (Number of Connections)"):
     """
-    Plot degrees of reporter and partner countries by descending rank.
+    Plot degree values of reporter and partner countries sorted by rank in descending order.
 
-    Args:
-        df_reporters (pd.DataFrame): DataFrame of reporter nodes with degree values.
-        df_partners (pd.DataFrame): DataFrame of partner nodes with degree values.
-        reporter_label (str): Label for reporter nodes in legend.
-        partner_label (str): Label for partner nodes in legend.
-        degree_col (str): Column containing degree values.
-        figsize (tuple): Size of the figure.
-        reporter_color (str): Color for exporter plot.
-        partner_color (str): Color for importer plot.
-        alpha (float): Transparency of points.
-        use_log_y (bool): Whether to use log scale for y-axis.
-        use_log_x (bool): Whether to use log scale for x-axis.
-        title (str): Plot title.
-        xlabel (str): X-axis label.
-        ylabel (str): Y-axis label.
+    Parameters
+    ----------
+    df_reporters : pandas.DataFrame
+        DataFrame containing degree values for reporter (exporter) nodes.
+    df_partners : pandas.DataFrame
+        DataFrame containing degree values for partner (importer) nodes.
+    reporter_label : str
+        Label for reporter nodes (used in legend).
+    partner_label : str
+        Label for partner nodes (used in legend).
+    degree_col : str
+        Column name containing degree values.
+    figsize : tuple
+        Size of the figure in inches (width, height).
+    reporter_color : str
+        Color used for reporter points and fit line.
+    partner_color : str
+        Color used for partner points and fit line.
+    alpha : float
+        Transparency level for the scatter points.
+    use_log_y : bool
+        Whether to use log scale for the y-axis.
+    use_log_x : bool
+        Whether to use log scale for the x-axis.
+    title : str
+        Title of the plot.
+    xlabel : str
+        Label for the x-axis.
+    ylabel : str
+        Label for the y-axis.
 
-    Returns:
-        matplotlib.axes.Axes: The plot axes object.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The matplotlib Axes object of the plot.
     """
     df_reporters_sorted = df_reporters.sort_values(by=degree_col, ascending=False)
     df_partners_sorted = df_partners.sort_values(by=degree_col, ascending=False)
@@ -248,17 +312,27 @@ def plot_weight_matrix(df, row="Partner Countries", col="Reporter Countries",
     """
     Plot a heatmap of the weighted bipartite adjacency matrix.
 
-    Args:
-        df (pd.DataFrame): Filtered trade DataFrame.
-        row (str): Column name for matrix rows (e.g., importers).
-        col (str): Column name for matrix columns (e.g., exporters).
-        value (str): Column with weights (e.g., trade volume).
-        cmap (str): Seaborn colormap.
-        figsize (tuple): Size of the figure.
-        title (str): Plot title.
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing filtered trade data with exporter, importer, and weight columns.
+    row : str
+        Column name to use as rows of the matrix (typically importers).
+    col : str
+        Column name to use as columns of the matrix (typically exporters).
+    value : str
+        Column containing the weight or value of the trade relationship.
+    cmap : str
+        Colormap used for the heatmap.
+    figsize : tuple
+        Size of the figure in inches (width, height).
+    title : str
+        Title of the plot.
 
-    Returns:
-        matplotlib.axes.Axes: The heatmap Axes object.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The Axes object of the resulting heatmap.
     """
     # Build matrix
     matrix = df.pivot(index=row, columns=col, values=value)
@@ -282,19 +356,29 @@ def plot_weight_matrix(df, row="Partner Countries", col="Reporter Countries",
 
 def plot_top_betweenness(df, col, title=None, color="steelblue", top_n=10, label_col="node", xlabel="Betweenness Centrality"):
     """
-    Plot a horizontal bar chart of the top N nodes by betweenness centrality.
+    Plot a horizontal bar chart of the top N nodes ranked by betweenness centrality.
 
-    Args:
-        df (pd.DataFrame): DataFrame with betweenness values and node labels.
-        col (str): Column name containing betweenness centrality values.
-        title (str): Title of the plot.
-        color (str): Color of the bars.
-        top_n (int): Number of top nodes to show.
-        label_col (str): Column with node names (default: 'node').
-        xlabel (str): Label for x-axis.
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing betweenness values and node labels.
+    col : str
+        Column name containing betweenness centrality scores.
+    title : str, optional
+        Title of the plot (default is None).
+    color : str
+        Color of the bars in the chart.
+    top_n : int
+        Number of top-ranking nodes to display.
+    label_col : str
+        Column name with node identifiers (default is 'node').
+    xlabel : str
+        Label for the x-axis.
 
-    Returns:
-        matplotlib.axes.Axes: The plot axes object.
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The matplotlib Axes object of the plot.
     """
     top = df.sort_values(by=col, ascending=False).head(top_n)
 
@@ -311,19 +395,30 @@ def plot_top_betweenness(df, col, title=None, color="steelblue", top_n=10, label
 
 def plot_mean_clustering_ratio_vs_degree(df, degree_col="degree", ratio_col="C4_rate", type_col="tipo", node_col="node", show_labels=False):
     """
-    Plot ⟨C4b^w / C4b⟩ vs. degree for each node type (e.g. exporters/importers),
-    averaging the ratio for nodes with the same degree.
+    Plot the mean clustering ratio ⟨C4b^w / C4b⟩ versus node degree for each node type.
 
-    Args:
-        df (pd.DataFrame): DataFrame containing clustering ratio, degree, node name and type.
-        degree_col (str): Column with node degrees.
-        ratio_col (str): Column with clustering ratio (e.g. C4b^w / C4b).
-        type_col (str): Column indicating node type (e.g. 'Exportador' or 'Importador').
-        node_col (str): Column with node names (used for optional annotations).
-        show_labels (bool): Whether to annotate each point with its node names.
+    The function groups nodes by degree and computes the average clustering ratio per group,
+    optionally displaying node labels.
 
-    Returns:
-        matplotlib.axes.Axes: The plot axes object.
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing at least the clustering ratio, node degree, type and identifier columns.
+    degree_col : str
+        Column name with node degrees.
+    ratio_col : str
+        Column name with clustering ratio (e.g., C4b^w / C4b).
+    type_col : str
+        Column name indicating node type (e.g., 'Exportador' or 'Importador').
+    node_col : str
+        Column name with node identifiers (used for optional annotations).
+    show_labels : bool
+        Whether to annotate each point with its corresponding node names.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The matplotlib Axes object of the plot.
     """
     # Group by type and degree
     grouped = (

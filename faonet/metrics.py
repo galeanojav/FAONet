@@ -5,14 +5,20 @@ import itertools
 import numpy as np
 
 def degree_by_group(G, group_nodes):
-    """Compute degree for a group of nodes.
+    """
+    Compute the degree (number of connections) for a given group of nodes.
 
-    Args:
-        G (networkx.Graph): Network.
-        group_nodes (iterable): Set of nodes.
+    Parameters
+    ----------
+    G : networkx.Graph
+        The network graph.
+    group_nodes : iterable
+        Set or list of nodes for which to compute the degree.
 
-    Returns:
-        pd.DataFrame: Degree per node.
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns ['Node', 'Degree'].
     """
     degrees = {n: G.degree(n) for n in group_nodes}
     return pd.DataFrame(degrees.items(), columns=["Node", "Degree"])
@@ -21,17 +27,25 @@ def degree_by_group(G, group_nodes):
 
 def compute_degree_and_strength(B, reporters, partners):
     """
+    Compute the degree and strength (sum of edge weights) for nodes in a bipartite network.
+
+    Parameters
+    ----------
+    B : networkx.Graph
+        Bipartite graph with weights on the edges (under the 'weight' attribute).
+    reporters : set
+        Set of nodes in one bipartite group (e.g., exporters).
+    partners : set
+        Set of nodes in the other bipartite group (e.g., importers).
+
+    Returns
+    -------
+    tuple of pd.DataFrame
+        (df_exporters, df_importers):
+        - df_exporters : DataFrame with 'Degree' and 'Strength' for reporter nodes.
+        - df_importers : DataFrame with 'Degree' and 'Strength' for partner nodes.
+    
     Compute degree and strength (sum of weights) for nodes in a bipartite network.
-
-    Args:
-        B (networkx.Graph): Bipartite network with 'weight' attribute on edges.
-        reporters (set): Nodes from group 0 (e.g., exporters).
-        partners (set): Nodes from group 1 (e.g., importers).
-
-    Returns:
-        tuple: (df_exporters, df_importers)
-            - df_exporters (pd.DataFrame): Degree and strength for reporter nodes.
-            - df_importers (pd.DataFrame): Degree and strength for partner nodes.
     """
     # Compute strength: sum of edge weights per node
     strength = {
@@ -65,14 +79,29 @@ def compute_degree_and_strength(B, reporters, partners):
 
 def compute_betweenness_all(G):
     """
-    Compute betweenness centrality for bipartite network and its projections,
-    using both real weights and inverted weights (for shortest path interpretation).
+    Compute multiple betweenness centrality measures for a bipartite network.
 
-    Args:
-        G (networkx.Graph): Bipartite graph with edge attribute 'weight'.
+    This function calculates:
+    - Betweenness in the full bipartite network using both real and inverted weights.
+    - Betweenness in the projected graphs (for exporters and importers), again with real and inverted weights.
 
-    Returns:
-        pd.DataFrame: DataFrame with betweenness centralities per node.
+    Parameters
+    ----------
+    G : networkx.Graph
+        Bipartite graph with edge attribute 'weight'.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with one row per node and the following columns:
+        - 'node': Node identifier
+        - 'bipartite_set': 0 if exporter, 1 if importer
+        - 'betweenness_bipartite': Centrality in full bipartite graph (weights)
+        - 'betweenness_bipartite_inv': Centrality in full bipartite graph (inverted weights)
+        - 'betweenness_proj_exporters': Centrality in exporter projection (weights)
+        - 'betweenness_proj_exporters_inv': Centrality in exporter projection (inverted weights)
+        - 'betweenness_proj_importers': Centrality in importer projection (weights)
+        - 'betweenness_proj_importers_inv': Centrality in importer projection (inverted weights)
     """
     # Identify bipartite sets
     exportadores = {n for n, d in G.nodes(data=True) if d.get("bipartite") == 0}
@@ -121,22 +150,22 @@ def compute_betweenness_all(G):
     return df_bet
 
 
-import pandas as pd
-import numpy as np
-import itertools
-
 def compute_bipartite_clustering(G, reporters=None, normalized=True):
     """
     Compute bipartite clustering coefficients C4b and C4b^w for each node in a bipartite graph.
 
-    Args:
-        G (networkx.Graph): Bipartite network with weights on edges.
+    Parameters
+    ----------
+    G : networkx.Graph
+        Bipartite graph with edge attribute 'weight'.
         reporters (set, optional): Set of nodes considered "Exportadores". 
                                    All others will be labeled "Importadores" if this is provided.
         normalized (bool): Whether to use normalized version of the clustering.
 
-    Returns:
-        pd.DataFrame: DataFrame with C4b, C4b^w, their ratio, degree and type.
+    Returns
+    -------
+    pd.DataFrame: 
+        DataFrame with C4b, C4b^w, their ratio, degree and type.
     """
 
     def c4b_node(G, node):

@@ -4,11 +4,44 @@ from scipy.optimize import curve_fit
 from scipy.stats import linregress
 
 def truncated_power_law(x, a, b, c):
-    """Truncated power-law function: a * x^(-b) * exp(-x/c)"""
+    """
+    
+    Truncated power-law function.
+
+    Parameters
+    ----------
+    x : array-like
+        Degree values.
+    a : float
+        Scaling factor.
+    b : float
+        Power-law exponent.
+    c : float
+        Cutoff parameter.
+
+    Returns
+    -------
+    array-like
+        Values computed from the truncated power-law formula: a * x^(-b) * exp(-x/c).
+    """
     return a * np.power(x, -b) * np.exp(-x / c)
 
 def r_squared(y_true, y_pred):
-    """Compute coefficient of determination (R²)"""
+    """
+    Compute the coefficient of determination (R²) between observed and predicted values.
+
+    Parameters
+    ----------
+    y_true : array-like
+        Observed data values.
+    y_pred : array-like
+        Fitted or predicted data values.
+
+    Returns
+    -------
+    float
+        R² value indicating the goodness of fit.
+    """
     ss_res = np.sum((y_true - y_pred) ** 2)
     ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
     return 1 - (ss_res / ss_tot)
@@ -24,7 +57,8 @@ def fit_truncated_power_law(degrees,
     """
     Fit a truncated power-law to a degree distribution and optionally plot the result.
 
-    Args:
+    Parameters
+    ----------
         degrees (array-like): Degree values (not yet counted).
         title (str): Title of the plot.
         xlabel (str): Label for x-axis.
@@ -72,7 +106,8 @@ def fit_strength_vs_degree(df_exporters, df_importers,
     """
     Fit and plot strength vs. degree in log-log scale for exporters and importers.
 
-    Args:
+    Parameters
+    ----------
         df_exporters (pd.DataFrame): Exporters' degree and strength.
         df_importers (pd.DataFrame): Importers' degree and strength.
         degree_col (str): Column name for degree values.

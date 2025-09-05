@@ -1,18 +1,28 @@
 import networkx as nx
 
 def build_bipartite_network(df, reporter_col, partner_col, weight_col):
-    """Build a bipartite network from trade data.
+    """
+    Construct a bipartite network from a FAOSTAT-style trade DataFrame.
 
-    Args:
-        df (pd.DataFrame): Trade DataFrame.
-        reporter_col (str): Exporting countries column.
-        partner_col (str): Importing countries column.
-        weight_col (str): Trade value column.
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The input data containing trade flows.
+    reporter_col : str
+        Column name for exporter (reporter) countries.
+    partner_col : str
+        Column name for importer (partner) countries.
+    weight_col : str
+        Column name for trade volume or weight of the connection.
 
-    Returns:
-        networkx.Graph: Bipartite network.
-        set: Exporter nodes.
-        set: Importer nodes.
+    Returns
+    -------
+    B : networkx.Graph
+        A bipartite NetworkX graph with edge weights.
+    reporters : set
+        Set of nodes representing exporters (bipartite=0).
+    partners : set
+        Set of nodes representing importers (bipartite=1).
     """
     B = nx.Graph()
     reporters = set(df[reporter_col])
@@ -27,13 +37,18 @@ def build_bipartite_network(df, reporter_col, partner_col, weight_col):
     return B, reporters, partners
 
 def remove_zero_weight_edges(G):
-    """Remove edges with zero weight from the graph.
+    """
+    Remove all edges with zero weight from a NetworkX graph.
 
-    Args:
-        G (networkx.Graph): Input graph.
+    Parameters
+    ----------
+    G : networkx.Graph
+        The input graph, which must contain a 'weight' attribute on edges.
 
-    Returns:
-        networkx.Graph: Cleaned graph.
+    Returns
+    -------
+    G : networkx.Graph
+        The modified graph with zero-weight edges removed.
     """
     zero_edges = [(u, v) for u, v, d in G.edges(data=True) if d.get("weight", 1) == 0]
     G.remove_edges_from(zero_edges)
