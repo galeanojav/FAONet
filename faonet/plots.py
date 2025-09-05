@@ -1,7 +1,10 @@
 import matplotlib.pyplot as plt
-import networkx as nx
 import pandas as pd
+import networkx as nx
 import seaborn as sns
+
+
+
 
 
 def plot_trade_scatter(df, x_col='Reporter Country Code (M49)', y_col='Partner Country Code (M49)', 
@@ -275,6 +278,35 @@ def plot_weight_matrix(df, row="Partner Countries", col="Reporter Countries",
     plt.xlabel(col)
     plt.ylabel(row)
     plt.title(title)
+    plt.tight_layout()
+    plt.show()
+
+    return ax
+
+
+def plot_top_betweenness(df, col, title=None, color="steelblue", top_n=10, label_col="node", xlabel="Betweenness Centrality"):
+    """
+    Plot a horizontal bar chart of the top N nodes by betweenness centrality.
+
+    Args:
+        df (pd.DataFrame): DataFrame with betweenness values and node labels.
+        col (str): Column name containing betweenness centrality values.
+        title (str): Title of the plot.
+        color (str): Color of the bars.
+        top_n (int): Number of top nodes to show.
+        label_col (str): Column with node names (default: 'node').
+        xlabel (str): Label for x-axis.
+
+    Returns:
+        matplotlib.axes.Axes: The plot axes object.
+    """
+    top = df.sort_values(by=col, ascending=False).head(top_n)
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.barh(top[label_col], top[col], color=color)
+    ax.set_xlabel(xlabel)
+    ax.set_title(title or f"Top {top_n} Nodes by {col}")
+    ax.invert_yaxis()
     plt.tight_layout()
     plt.show()
 

@@ -1,5 +1,6 @@
 import pandas as pd
 import networkx as nx
+from networkx.algorithms import bipartite
 
 def degree_by_group(G, group_nodes):
     """Compute degree for a group of nodes.
@@ -57,3 +58,62 @@ def compute_degree_and_strength(B, reporters, partners):
     }).dropna()
 
     return df_exporters, df_importers
+
+
+
+def compute_betweenness_all(G):
+    """
+    Compute betweenness centrality for bipartite network and its projections,
+    using both real weights and inverted weights (for shortest path interpretation).
+
+    Args:
+        G (networkx.Graph): Bipartite graph with edge attribute 'weight'.
+
+    Returns:
+        pd.DataFrame: DataFrame with betweenness centralities per node.
+    """
+    # Identify bipartite sets
+    exportadores = {n for n, d in G.nodes(data=True) if d.get("bipartite") == 0}
+    importadores = set(G) - exportadores
+
+    # Invert weights for shortest-path based betweenness
+    G_inv = G.copy()
+    for u, v, d in G_inv.edges(data=True):
+        peso = d.get("weight", 1)
+        d["inv_weight"] = 1 / peso if peso > 0 else 0
+
+    # Betweenness in original bipartite network
+    bet_bip = nx.betweenness_centrality(G, weight="weight")
+    bet_bip_inv = nx.betweenness_centrality(G_inv, weight="inv_weight")
+
+    # Projected graphs
+    proy_exp = bipartite.weighted_projected_graph(G, exportadores)
+    proy_imp = bipartite.weighted_projected_graph(G, importadores)
+
+    # Betweenness in projections (real weights)
+    bet_proy_exp = nx.betweenness_centrality(proy_exp, weight="weight")
+    bet_proy_imp = nx.betweenness_centrality(proy_imp, weight="weight")
+
+    # Invert weights in projections
+    for _, _, d in proy_exp.edges(data=True):
+        d["inv_weight"] = 1 / d["weight"] if d["weight"] > 0 else 0
+    for _, _, d in proy_imp.edges(data=True):
+        d["inv_weight"] = 1 / d["weight"] if d["weight"] > 0 else 0
+
+    bet_proy_exp_inv = nx.betweenness_centrality(proy_exp, weight="inv_weight")
+    bet_proy_imp_inv = nx.betweenness_centrality(proy_imp, weight="inv_weight")
+
+    # Build results
+    nodos = list(G.nodes())
+    df_bet = pd.DataFrame({
+        "node": nodos,
+        "bipartite_set": [G.nodes[n].get("bipartite") for n in nodos],
+        "betweenness_bipartite": [bet_bip.get(n, 0) for n in nodos],
+        "betweenness_bipartite_inv": [bet_bip_inv.get(n, 0) for n in nodos],
+        "betweenness_proj_exporters": [bet_proy_exp.get(n, None) for n in nodos],
+        "betweenness_proj_exporters_inv": [bet_proy_exp_inv.get(n, None) for n in nodos],
+        "betweenness_proj_importers": [bet_proy_imp.get(n, None) for n in nodos],
+        "betweenness_proj_importers_inv": [bet_proy_imp_inv.get(n, None) for n in nodos],
+    })
+
+    return df_bet
