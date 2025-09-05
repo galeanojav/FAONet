@@ -27,3 +27,6 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/galeanojav/FAONet"
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
