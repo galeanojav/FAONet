@@ -14,7 +14,8 @@ license = { text = "MIT" }
 dependencies = [
     "pandas",
     "networkx",
-    "matplotlib"
+    "matplotlib",
+    "seaborn"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
