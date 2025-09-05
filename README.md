@@ -25,7 +25,7 @@ pip install .
 ## 🚀 Quick Start
 
 ```python
-from faonet.io import load_and_merge_csv
+from faonet.io import load_file
 from faonet.filtering import filter_top_percentile
 from faonet.network import build_bipartite_network
 from faonet.metrics import compute_degree_and_strength
