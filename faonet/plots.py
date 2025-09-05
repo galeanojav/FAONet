@@ -3,10 +3,6 @@ import pandas as pd
 import networkx as nx
 import seaborn as sns
 
-
-
-
-
 def plot_trade_scatter(df, x_col='Reporter Country Code (M49)', y_col='Partner Country Code (M49)', 
                        value_col='Value', step=10, cmap='viridis', alpha=0.8, figsize=(8, 6)):
     """
@@ -309,5 +305,58 @@ def plot_top_betweenness(df, col, title=None, color="steelblue", top_n=10, label
     ax.invert_yaxis()
     plt.tight_layout()
     plt.show()
+
+    return ax
+
+
+def plot_mean_clustering_ratio_vs_degree(df, degree_col="degree", ratio_col="C4_rate", type_col="tipo", node_col="node", show_labels=False):
+    """
+    Plot ⟨C4b^w / C4b⟩ vs. degree for each node type (e.g. exporters/importers),
+    averaging the ratio for nodes with the same degree.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing clustering ratio, degree, node name and type.
+        degree_col (str): Column with node degrees.
+        ratio_col (str): Column with clustering ratio (e.g. C4b^w / C4b).
+        type_col (str): Column indicating node type (e.g. 'Exportador' or 'Importador').
+        node_col (str): Column with node names (used for optional annotations).
+        show_labels (bool): Whether to annotate each point with its node names.
+
+    Returns:
+        matplotlib.axes.Axes: The plot axes object.
+    """
+    # Group by type and degree
+    grouped = (
+        df.groupby([type_col, degree_col])
+        .agg({
+            ratio_col: "mean",
+            node_col: lambda x: ', '.join(x)
+        })
+        .reset_index()
+        .rename(columns={node_col: "nodos"})
+    )
+
+    # Create figure
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot each type separately
+    for tipo in grouped[type_col].unique():
+        subset = grouped[grouped[type_col] == tipo]
+        ax.plot(subset[degree_col], subset[ratio_col],
+                label=tipo,
+                marker='o' if tipo.lower().startswith("export") else 's',
+                linestyle='-')
+
+        if show_labels:
+            for _, row in subset.iterrows():
+                ax.annotate(row["nodos"], (row[degree_col], row[ratio_col]), fontsize=6)
+
+    # Labels and styling
+    ax.set_xlabel("Degree")
+    ax.set_ylabel("⟨C4b^w / C4b⟩")
+    ax.set_title("Mean clustering ratio ⟨C4b^w / C4b⟩ vs. Degree by node type")
+    ax.grid(True)
+    ax.legend()
+    plt.tight_layout()
 
     return ax

@@ -1,6 +1,8 @@
 import pandas as pd
 import networkx as nx
 from networkx.algorithms import bipartite
+import itertools
+import numpy as np
 
 def degree_by_group(G, group_nodes):
     """Compute degree for a group of nodes.
@@ -117,3 +119,68 @@ def compute_betweenness_all(G):
     })
 
     return df_bet
+
+
+def compute_bipartite_clustering(G, normalized=True):
+    """
+    Compute bipartite clustering coefficient C4b and its weighted version C4b^w for all nodes.
+
+    Args:
+        G (networkx.Graph): Bipartite graph with edge weights.
+        normalized (bool): Whether to normalize by number of potential quadrilaterals.
+
+    Returns:
+        pd.DataFrame: DataFrame with node, C4b, C4b^w, and degree.
+    """
+
+    def c4b_node(G, node, normalized):
+        neighbors = list(G[node])
+        k_i = len(neighbors)
+        s_i = sum(G[node][n].get("weight", 1) for n in neighbors)
+
+        if k_i < 2:
+            return 0.0, 0.0
+
+        # All unique neighbor pairs
+        neighbor_pairs = list(itertools.combinations(neighbors, 2))
+        q_i = 0
+        qw_i = 0.0
+
+        for m, n in neighbor_pairs:
+            neighbors_m = set(G[m])
+            neighbors_n = set(G[n])
+            common = neighbors_m & neighbors_n - {node}
+
+            for v in common:
+                q_i += 1
+                w_im = G[node][m].get("weight", 1)
+                w_in = G[node][n].get("weight", 1)
+                wnorm_m = w_im / s_i if s_i > 0 else 0
+                wnorm_n = w_in / s_i if s_i > 0 else 0
+                qw_i += (wnorm_m + wnorm_n) / 2
+
+        # Number of possible quadrilaterals
+        k_nn = len(set.union(*(set(G[n]) for n in neighbors)) - {node})
+        Q_i = k_i * (k_i - 1) / 2 * k_nn if normalized else 1
+
+        C4b = q_i / Q_i if Q_i > 0 else 0
+        C4bw = qw_i / Q_i if Q_i > 0 else 0
+        return C4b, C4bw
+
+    # Compute for all nodes
+    results = []
+    for node in G.nodes():
+        c4b, c4bw = c4b_node(G, node, normalized)
+        results.append({
+            "node": node,
+            "C4b": c4b,
+            "C4b^w": c4bw,
+            "degree": G.degree(node)
+        })
+    df = pd.DataFrame(results)
+    df["C4_rate"] = df["C4b^w"] / df["C4b"]
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)
+    df["tipo"] =['Exportador']*25 + ['Importador']*(len(df)-25)
+
+
+    return df
