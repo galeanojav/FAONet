@@ -15,7 +15,7 @@ It provides tools for:
 Clone the repository and install with `pip`:
 
 ```bash
-git clone https://github.com/yourusername/FAONet.git
+git clone https://github.com/galeanojav/FAONet.git
 cd FAONet
 pip install .
 ```
@@ -32,12 +32,12 @@ from faonet.metrics import compute_degree_and_strength
 from faonet.plots import plot_weight_matrix
 
 # Load FAOSTAT CSVs
-df = load_and_merge_csv(["examples/Data/FAOSTAT_data_part1.csv", "examples/Data/FAOSTAT_data_part2.csv"])
+df = load_file("examples/Data/Green_Coffe_FAO_allyears.csv")
 
-# Filter 90% of market
+# Filter 90% of the market
 df_filtered = filter_top_percentile(df, value_column="Value", percentile=0.9)
 
-# Build bipartite graph
+# Build a bipartite graph
 G, reporters, partners = build_bipartite_network(df_filtered, "Reporter Countries", "Partner Countries", "Value")
 
 # Compute degree and strength
