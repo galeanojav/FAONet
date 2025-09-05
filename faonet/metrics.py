@@ -121,19 +121,25 @@ def compute_betweenness_all(G):
     return df_bet
 
 
-def compute_bipartite_clustering(G, normalized=True):
+import pandas as pd
+import numpy as np
+import itertools
+
+def compute_bipartite_clustering(G, reporters=None, normalized=True):
     """
-    Compute bipartite clustering coefficient C4b and its weighted version C4b^w for all nodes.
+    Compute bipartite clustering coefficients C4b and C4b^w for each node in a bipartite graph.
 
     Args:
-        G (networkx.Graph): Bipartite graph with edge weights.
-        normalized (bool): Whether to normalize by number of potential quadrilaterals.
+        G (networkx.Graph): Bipartite network with weights on edges.
+        reporters (set, optional): Set of nodes considered "Exportadores". 
+                                   All others will be labeled "Importadores" if this is provided.
+        normalized (bool): Whether to use normalized version of the clustering.
 
     Returns:
-        pd.DataFrame: DataFrame with node, C4b, C4b^w, and degree.
+        pd.DataFrame: DataFrame with C4b, C4b^w, their ratio, degree and type.
     """
 
-    def c4b_node(G, node, normalized):
+    def c4b_node(G, node):
         neighbors = list(G[node])
         k_i = len(neighbors)
         s_i = sum(G[node][n].get("weight", 1) for n in neighbors)
@@ -141,7 +147,6 @@ def compute_bipartite_clustering(G, normalized=True):
         if k_i < 2:
             return 0.0, 0.0
 
-        # All unique neighbor pairs
         neighbor_pairs = list(itertools.combinations(neighbors, 2))
         q_i = 0
         qw_i = 0.0
@@ -159,7 +164,7 @@ def compute_bipartite_clustering(G, normalized=True):
                 wnorm_n = w_in / s_i if s_i > 0 else 0
                 qw_i += (wnorm_m + wnorm_n) / 2
 
-        # Number of possible quadrilaterals
+        # Normalization term
         k_nn = len(set.union(*(set(G[n]) for n in neighbors)) - {node})
         Q_i = k_i * (k_i - 1) / 2 * k_nn if normalized else 1
 
@@ -167,20 +172,22 @@ def compute_bipartite_clustering(G, normalized=True):
         C4bw = qw_i / Q_i if Q_i > 0 else 0
         return C4b, C4bw
 
-    # Compute for all nodes
+    # Compute clustering for all nodes
     results = []
     for node in G.nodes():
-        c4b, c4bw = c4b_node(G, node, normalized)
+        c4b, c4bw = c4b_node(G, node)
         results.append({
             "node": node,
             "C4b": c4b,
             "C4b^w": c4bw,
             "degree": G.degree(node)
         })
+
     df = pd.DataFrame(results)
     df["C4_rate"] = df["C4b^w"] / df["C4b"]
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
-    df["tipo"] =['Exportador']*25 + ['Importador']*(len(df)-25)
 
+    if reporters is not None:
+        df["tipo"] = df["node"].apply(lambda x: "Exportador" if x in reporters else "Importador")
 
     return df
