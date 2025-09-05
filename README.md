@@ -1,33 +1,81 @@
 # FAONet
 
-FAONet is a Python package to analyze bipartite trade networks using data from FAOSTAT.  
-It supports modular loading, filtering, network creation, and metrics computation.
+**FAONet** is a Python package for building and analyzing **bipartite trade networks** using data from [FAOSTAT](https://www.fao.org/faostat/).  
+It provides tools for:
 
-FAONet is a project that leverages data from FAOSTAT to build and analyze bipartite networks in the context of international agricultural trade. The main goal is to model relationships between countries and products (or other relevant entities) as a complex network and explore its structural properties.
+- Importing and filtering trade data.
+- Building weighted bipartite networks.
+- Calculating structural metrics: degree, strength, clustering, betweenness.
+- Visualizing trade matrices, degree distributions, and centrality.
 
-**Features:**
-- Processing of FAOSTAT datasets
-- Construction of bipartite networks (e.g., country-product, exporter-importer)
-- Analysis of structural properties (degree, strength, clustering, communities)
-- Interactive visualization and summary statistics
+---
 
-**Applications:**
-- Agricultural economics
-- Resilience analysis of food supply networks
-- International trade structure exploration
+## 📦 Installation
 
-## Installation
+Clone the repository and install with `pip`:
 
 ```bash
+git clone https://github.com/yourusername/FAONet.git
+cd FAONet
 pip install .
 ```
 
-## Usage
+---
+
+## 🚀 Quick Start
 
 ```python
 from faonet.io import load_and_merge_csv
 from faonet.filtering import filter_top_percentile
 from faonet.network import build_bipartite_network
+from faonet.metrics import compute_degree_and_strength
+from faonet.plots import plot_weight_matrix
+
+# Load FAOSTAT CSVs
+df = load_and_merge_csv(["examples/Data/FAOSTAT_data_part1.csv", "examples/Data/FAOSTAT_data_part2.csv"])
+
+# Filter 90% of market
+df_filtered = filter_top_percentile(df, value_column="Value", percentile=0.9)
+
+# Build bipartite graph
+G, reporters, partners = build_bipartite_network(df_filtered, "Reporter Countries", "Partner Countries", "Value")
+
+# Compute degree and strength
+df_exporters, df_importers = compute_degree_and_strength(G, reporters, partners)
+
+# Visualize matrix
+plot_weight_matrix(df_filtered)
 ```
 
+---
 
+## 📁 Example
+
+A complete analysis notebook is available in:
+
+📍 [`examples/FAONet_example.ipynb`](examples/FAONet_example.ipynb)
+
+It includes:
+
+- Data loading and filtering
+- Network construction
+- All main metrics (degree, strength, clustering, betweenness)
+- Fitted models and visualizations
+
+The example uses FAOSTAT coffee trade data (CSV files in `examples/Data/`).
+
+---
+
+## 🧪 Testing
+
+Run the test suite with:
+
+```bash
+pytest tests/
+```
+
+---
+
+## 📄 License
+
+MIT License.
