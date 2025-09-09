@@ -32,3 +32,12 @@ classifiers = [
 
 [tool.pytest.ini_options]
 python_files = "test_*.py"
+
+[tool.setuptools]
+packages = ["faonet"]
+
+[tool.setuptools.package-data]
+"*" = ["*.csv", "*.txt", "*.md"]  # o lo que necesites incluir
+
+[tool.setuptools.exclude-package-data]
+"*" = ["site/*"]
