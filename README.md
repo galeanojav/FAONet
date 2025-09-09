@@ -28,6 +28,8 @@ or using PyPi version:
 
 ```bash
 pip install faonet
+```
+
 ---
 
 ## 🚀 Quick Start
