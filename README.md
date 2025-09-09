@@ -3,6 +3,10 @@
 [![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://TU_USUARIO.github.io/FAONet)
 
 
+```markdown
+[![PyPI](https://img.shields.io/pypi/v/faonet.svg)](https://pypi.org/project/faonet/)
+
+
 **FAONet** is a Python package for building and analyzing **bipartite trade networks** using data from [FAOSTAT](https://www.fao.org/faostat/).  
 It provides tools for:
 
@@ -22,7 +26,8 @@ git clone https://github.com/galeanojav/FAONet.git
 cd FAONet
 pip install .
 ```
-
+```bash
+pip install faonet
 ---
 
 ## 🚀 Quick Start
