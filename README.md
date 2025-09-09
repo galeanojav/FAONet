@@ -23,6 +23,9 @@ git clone https://github.com/galeanojav/FAONet.git
 cd FAONet
 pip install .
 ```
+
+or using PyPi version:
+
 ```bash
 pip install faonet
 ---
