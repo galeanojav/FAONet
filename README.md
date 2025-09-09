@@ -1,5 +1,11 @@
 # FAONet
 
+[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://TU_USUARIO.github.io/FAONet)
+
+FAONet is a Python package for analyzing bipartite trade networks using FAOSTAT data.
+
+---
+
 **FAONet** is a Python package for building and analyzing **bipartite trade networks** using data from [FAOSTAT](https://www.fao.org/faostat/).  
 It provides tools for:
 
@@ -63,13 +69,6 @@ It includes:
 - Fitted models and visualizations
 
 The example uses FAOSTAT coffee trade data (CSV files in `examples/Data/`).
-
----
-# FAONet
-
-[![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://TU_USUARIO.github.io/FAONet)
-
-FAONet is a Python package for analyzing bipartite trade networks using FAOSTAT data.
 
 ---
 
