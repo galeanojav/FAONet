@@ -3,7 +3,6 @@
 [![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://TU_USUARIO.github.io/FAONet)
 
 
-```markdown
 [![PyPI](https://img.shields.io/pypi/v/faonet.svg)](https://pypi.org/project/faonet/)
 
 
