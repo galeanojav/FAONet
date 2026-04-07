@@ -53,7 +53,10 @@ def fit_truncated_power_law(degrees,
                              show_plot=True,
                              figsize=(8, 6),
                              color_data="black",
-                             color_fit="darkred"):
+                             color_fit="darkred",
+                             save_path=None,
+                             save_dpi=300,
+                             save_bbox_inches="tight"):
     """
     Fit a truncated power-law to a degree distribution and optionally plot the result.
 
@@ -67,6 +70,9 @@ def fit_truncated_power_law(degrees,
         figsize (tuple): Size of the figure.
         color_data (str): Color for scatter data.
         color_fit (str): Color for the fitted curve.
+        save_path (str or None): If provided, save the figure to this path.
+        save_dpi (int): Resolution used when saving the figure.
+        save_bbox_inches (str): Bounding box option passed to `savefig`.
 
     Returns:
         dict: Dictionary with fit parameters and R².
@@ -79,17 +85,25 @@ def fit_truncated_power_law(degrees,
     fit_values = truncated_power_law(values, *popt)
     r2 = r_squared(counts, fit_values)
 
-    if show_plot:
-        plt.figure(figsize=figsize)
-        plt.scatter(values, counts, label="Data", color=color_data)
-        plt.plot(values, fit_values, label=f"Fit (R² = {r2:.2f})", color=color_fit)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.title(title)
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
+    fig = None
+    if show_plot or save_path is not None:
+        fig, ax = plt.subplots(figsize=figsize)
+        ax.scatter(values, counts, label="Data", color=color_data)
+        ax.plot(values, fit_values, label=f"Fit (R² = {r2:.2f})", color=color_fit)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        ax.legend()
+        ax.grid(True)
+        fig.tight_layout()
+
+        if save_path is not None:
+            fig.savefig(save_path, dpi=save_dpi, bbox_inches=save_bbox_inches)
+
+    if show_plot and fig is not None:
         plt.show()
+    elif fig is not None:
+        plt.close(fig)
 
     return {
         "parameters": {"a": popt[0], "b": popt[1], "c": popt[2]},
@@ -102,7 +116,8 @@ def fit_truncated_power_law(degrees,
 
 def fit_strength_vs_degree(df_exporters, df_importers,
                            degree_col="Degree", strength_col="Strength",
-                           figsize=(8, 5), show_plot=True):
+                           figsize=(8, 5), show_plot=True,
+                           save_path=None, save_dpi=300, save_bbox_inches="tight"):
     """
     Fit and plot strength vs. degree in log-log scale for exporters and importers.
 
@@ -114,6 +129,9 @@ def fit_strength_vs_degree(df_exporters, df_importers,
         strength_col (str): Column name for strength values.
         figsize (tuple): Size of the plot.
         show_plot (bool): Whether to display the plot.
+        save_path (str or None): If provided, save the figure to this path.
+        save_dpi (int): Resolution used when saving the figure.
+        save_bbox_inches (str): Bounding box option passed to `savefig`.
 
     Returns:
         dict: Dictionary containing slopes, intercepts, R² values, and fitted data.
@@ -143,28 +161,36 @@ def fit_strength_vs_degree(df_exporters, df_importers,
         df_importers[degree_col].values,
         df_importers[strength_col].values)
 
-    if show_plot:
-        plt.figure(figsize=figsize)
-        plt.xscale('log')
-        plt.yscale('log')
-        plt.xlabel('Degree (Number of Connections)')
-        plt.ylabel('Strength (Sum of Weights)')
-        plt.title('Power-law Fit: Strength vs Degree')
-        plt.grid(True)
+    fig = None
+    if show_plot or save_path is not None:
+        fig, ax = plt.subplots(figsize=figsize)
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+        ax.set_xlabel('Degree (Number of Connections)')
+        ax.set_ylabel('Strength (Sum of Weights)')
+        ax.set_title('Power-law Fit: Strength vs Degree')
+        ax.grid(True)
 
         # Puntos
-        plt.scatter(df_exporters[degree_col], df_exporters[strength_col], 
-                    alpha=0.7, color='blue', label=f'Exporters (α={slope_exp:.2f})')
-        plt.scatter(df_importers[degree_col], df_importers[strength_col],
-                    alpha=0.7, color='orange', label=f'Importers (α={slope_imp:.2f})')
+        ax.scatter(df_exporters[degree_col], df_exporters[strength_col], 
+                   alpha=0.7, color='blue', label=f'Exporters (β={slope_exp:.2f})')
+        ax.scatter(df_importers[degree_col], df_importers[strength_col],
+                   alpha=0.7, color='orange', label=f'Importers (β={slope_imp:.2f})')
 
         # Líneas de ajuste
-        plt.plot(deg_exp, fit_exp, color='blue', linestyle='dashed')
-        plt.plot(deg_imp, fit_imp, color='orange', linestyle='dashed')
-        
-        plt.legend()
-        plt.tight_layout()
+        ax.plot(deg_exp, fit_exp, color='blue', linestyle='dashed')
+        ax.plot(deg_imp, fit_imp, color='orange', linestyle='dashed')
+
+        ax.legend()
+        fig.tight_layout()
+
+        if save_path is not None:
+            fig.savefig(save_path, dpi=save_dpi, bbox_inches=save_bbox_inches)
+
+    if show_plot and fig is not None:
         plt.show()
+    elif fig is not None:
+        plt.close(fig)
 
     return {
         "exporters": {
