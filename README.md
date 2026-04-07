@@ -9,7 +9,7 @@ It provides tools for:
 
 - Importing and filtering trade data.
 - Building weighted bipartite networks.
-- Calculating structural metrics: degree, strength, clustering, betweenness.
+- Calculating structural metrics: degree, strength, clustering, and betweenness.
 - Visualizing trade matrices, degree distributions, and centrality.
 
 ---
