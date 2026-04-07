@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "faonet"
-version = "0.1.0"
+version = "0.2.0"
 description = "Analyze bipartite trade networks using FAOSTAT data"
 authors = [
     { name = "Javier Galeano", email = "galeanojav@gmail.com" }
