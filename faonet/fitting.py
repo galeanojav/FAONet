@@ -62,20 +62,34 @@ def fit_truncated_power_law(degrees,
 
     Parameters
     ----------
-        degrees (array-like): Degree values (not yet counted).
-        title (str): Title of the plot.
-        xlabel (str): Label for x-axis.
-        ylabel (str): Label for y-axis.
-        show_plot (bool): Whether to display the plot.
-        figsize (tuple): Size of the figure.
-        color_data (str): Color for scatter data.
-        color_fit (str): Color for the fitted curve.
-        save_path (str or None): If provided, save the figure to this path.
-        save_dpi (int): Resolution used when saving the figure.
-        save_bbox_inches (str): Bounding box option passed to `savefig`.
+    degrees : array-like
+        Degree values, not yet aggregated into frequencies.
+    title : str
+        Title of the plot.
+    xlabel : str
+        Label for the x-axis.
+    ylabel : str
+        Label for the y-axis.
+    show_plot : bool
+        Whether to display the plot.
+    figsize : tuple
+        Size of the figure in inches.
+    color_data : str
+        Color used for the observed data points.
+    color_fit : str
+        Color used for the fitted curve.
+    save_path : str or None
+        If provided, save the figure to this path.
+    save_dpi : int
+        Resolution used when saving the figure.
+    save_bbox_inches : str
+        Bounding box option passed to `savefig`.
 
-    Returns:
-        dict: Dictionary with fit parameters and R².
+    Returns
+    -------
+    dict
+        Dictionary containing fitted parameters, R², observed frequencies,
+        and fitted values.
     """
     degrees = np.asarray(degrees)
     values, counts = np.unique(degrees, return_counts=True)
@@ -123,18 +137,30 @@ def fit_strength_vs_degree(df_exporters, df_importers,
 
     Parameters
     ----------
-        df_exporters (pd.DataFrame): Exporters' degree and strength.
-        df_importers (pd.DataFrame): Importers' degree and strength.
-        degree_col (str): Column name for degree values.
-        strength_col (str): Column name for strength values.
-        figsize (tuple): Size of the plot.
-        show_plot (bool): Whether to display the plot.
-        save_path (str or None): If provided, save the figure to this path.
-        save_dpi (int): Resolution used when saving the figure.
-        save_bbox_inches (str): Bounding box option passed to `savefig`.
+    df_exporters : pandas.DataFrame
+        DataFrame containing exporter degree and strength values.
+    df_importers : pandas.DataFrame
+        DataFrame containing importer degree and strength values.
+    degree_col : str
+        Column name for degree values.
+    strength_col : str
+        Column name for strength values.
+    figsize : tuple
+        Size of the figure in inches.
+    show_plot : bool
+        Whether to display the plot.
+    save_path : str or None
+        If provided, save the figure to this path.
+    save_dpi : int
+        Resolution used when saving the figure.
+    save_bbox_inches : str
+        Bounding box option passed to `savefig`.
 
-    Returns:
-        dict: Dictionary containing slopes, intercepts, R² values, and fitted data.
+    Returns
+    -------
+    dict
+        Dictionary containing slopes, intercepts, R² values, and fitted curves
+        for exporters and importers.
     """
     def power_law_fit(degree_vals, strength_vals):
         mask = (degree_vals > 0) & (strength_vals > 0)

@@ -872,7 +872,7 @@ def plot_betweenness_heatmap(
     label_col : str
         Column name with node labels.
     mode : {"rank", "value"}
-        Whether to plot within-year rank or raw metric values.
+        Whether to plot within-year rank or raw metric values. Rank=1 is the most central. 
     top_n : int
         Number of nodes to include when `nodes` is not provided.
     nodes : list or None
@@ -1006,7 +1006,7 @@ def plot_mean_clustering_ratio_vs_degree(
     ratio_col : str
         Column name with clustering ratio (e.g., C4b^w / C4b).
     type_col : str
-        Column name indicating node type (e.g., 'Exportador' or 'Importador').
+        Column name indicating node type (e.g., 'Exporter' or 'Importer').
     node_col : str
         Column name with node identifiers (used for optional annotations).
     show_labels : bool
@@ -1094,8 +1094,8 @@ def plot_clustering_ratio_multiyear(
     degree_col="degree",
     ratio_col="C4_rate",
     type_col="tipo",
-    exporter_label="Exportador",
-    importer_label="Importador",
+    exporter_label="Exporter",
+    importer_label="Importer",
     figsize=(16, 6),
     colors=None,
     marker="o",
